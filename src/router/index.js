@@ -19,6 +19,12 @@ const routes = [
         meta: { title: '轮播图管理' }
       },
       {
+        path: '/notice',
+        name: 'Notice',
+        component: () => import('../views/notice/index.vue'),
+        meta: { title: '公告管理' }
+      },
+      {
         path: '/user',
         name: 'User',
         component: () => import('../views/user/index.vue'),

@@ -20,6 +20,10 @@
           <el-icon><Picture /></el-icon>
           <span>轮播图库</span>
         </el-menu-item>
+        <el-menu-item index="/notice">
+          <el-icon><Bell /></el-icon>
+          <span>公告管理</span>
+        </el-menu-item>
         <el-menu-item index="/user">
           <el-icon><User /></el-icon>
           <span>用户中心</span>
@@ -64,7 +68,7 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DataAnalysis, Picture, User, Document, ArrowDown } from '@element-plus/icons-vue'
+import { DataAnalysis, Picture, User, Document, Bell } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

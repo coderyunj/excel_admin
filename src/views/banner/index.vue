@@ -78,7 +78,12 @@
         <el-form-item label="跳转链接">
           <el-input v-model="form.linkUrl" placeholder="请输入跳转链接" />
         </el-form-item>
-        <el-form-item label="排��">
+        <el-form-item label="关联公告">
+          <el-select v-model="form.noticeId" placeholder="不关联公告" clearable style="width: 100%">
+            <el-option v-for="n in noticeList" :key="n.id" :label="n.title" :value="n.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="排序">
           <el-input-number v-model="form.sortOrder" :min="0" />
         </el-form-item>
         <el-form-item label="状态">
@@ -97,7 +102,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Close } from '@element-plus/icons-vue'
-import { getBannerList, createBanner, updateBanner, deleteBanner, uploadImage } from '../../api'
+import { getBannerList, createBanner, updateBanner, deleteBanner, uploadImage, getNoticeList } from '../../api'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -108,12 +113,14 @@ const total = ref(0)
 const dialogVisible = ref(false)
 const isEdit = ref(false)
 const fileInput = ref(null)
+const noticeList = ref([])
 
 const form = ref({
   id: null,
   title: '',
   imageUrl: '',
   linkUrl: '',
+  noticeId: null,
   sortOrder: 0,
   status: 1
 })
@@ -137,7 +144,7 @@ const loadData = async () => {
 
 const handleAdd = () => {
   isEdit.value = false
-  form.value = { id: null, title: '', imageUrl: '', linkUrl: '', sortOrder: 0, status: 1 }
+  form.value = { id: null, title: '', imageUrl: '', linkUrl: '', noticeId: null, sortOrder: 0, status: 1 }
   tempFile = null
   dialogVisible.value = true
 }
@@ -194,7 +201,14 @@ const handleSubmit = async () => {
   finally { submitting.value = false }
 }
 
-onMounted(() => { loadData() })
+onMounted(() => { loadData(); loadNotices() })
+
+const loadNotices = async () => {
+  try {
+    const res = await getNoticeList(1, 100)
+    if (res.code === 200) noticeList.value = res.data.records || []
+  } catch (e) { console.error(e) }
+}
 </script>
 
 <style scoped>

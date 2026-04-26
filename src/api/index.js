@@ -51,3 +51,9 @@ export const uploadImage = (file) => {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
 }
+
+export const getNoticeList = (page, size) => request.get('/admin/notice', { params: { page, size } })
+export const getNotice = (id) => request.get(`/admin/notice/${id}`)
+export const createNotice = (data) => request.post('/admin/notice', data)
+export const updateNotice = (id, data) => request.put(`/admin/notice/${id}`, data)
+export const deleteNotice = (id) => request.delete(`/admin/notice/${id}`)
