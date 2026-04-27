@@ -95,14 +95,25 @@
         <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="cropperVisible" title="裁剪图片" width="750px" destroy-on-close @close="handleCropCancel">
+      <div class="cropper-container">
+        <img ref="cropperImg" class="cropper-image" />
+      </div>
+      <template #footer>
+        <el-button @click="handleCropCancel">取消</el-button>
+        <el-button type="primary" @click="handleCropConfirm">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Close } from '@element-plus/icons-vue'
 import { getBannerList, createBanner, updateBanner, deleteBanner, uploadImage, getNoticeList } from '../../api'
+import Cropper from 'cropperjs'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -114,6 +125,11 @@ const dialogVisible = ref(false)
 const isEdit = ref(false)
 const fileInput = ref(null)
 const noticeList = ref([])
+
+const cropperVisible = ref(false)
+const cropperImg = ref(null)
+const pendingFile = ref(null)
+let cropperInstance = null
 
 const form = ref({
   id: null,
@@ -168,9 +184,64 @@ const triggerUpload = () => fileInput.value?.click()
 const handleFileChange = (e) => {
   const file = e.target.files[0]
   if (file) {
-    tempFile = file
-    form.value.imageUrl = URL.createObjectURL(file)
+    pendingFile.value = file
+    cropperVisible.value = true
+    setTimeout(initCropper, 100)
   }
+}
+
+const initCropper = () => {
+  if (cropperInstance) {
+    cropperInstance.destroy()
+    cropperInstance = null
+  }
+  const image = cropperImg.value
+  if (image) {
+    const url = URL.createObjectURL(pendingFile.value)
+    image.src = url
+    cropperInstance = new Cropper(image, {
+      aspectRatio: 5 / 2,
+      viewMode: 1,
+      autoCrop: true,
+      autoCropArea: 0.9,
+      cropBoxResizable: true,
+      minCropBoxWidth: 200,
+      minCropBoxHeight: 80,
+    })
+  }
+}
+
+const handleCropConfirm = () => {
+  if (!cropperInstance) return
+  const canvas = cropperInstance.getCroppedCanvas({
+    width: 750,
+    height: 300,
+  })
+  if (!canvas) {
+    ElMessage.error('裁剪失败')
+    return
+  }
+  canvas.toBlob((blob) => {
+    const file = new File([blob], pendingFile.value.name, { type: 'image/jpeg' })
+    tempFile = file
+    form.value.imageUrl = URL.createObjectURL(blob)
+    cropperVisible.value = false
+    if (cropperInstance) {
+      cropperInstance.destroy()
+      cropperInstance = null
+    }
+    if (fileInput.value) fileInput.value.value = ''
+  }, 'image/jpeg', 0.9)
+}
+
+const handleCropCancel = () => {
+  cropperVisible.value = false
+  pendingFile.value = null
+  if (cropperInstance) {
+    cropperInstance.destroy()
+    cropperInstance = null
+  }
+  if (fileInput.value) fileInput.value.value = ''
 }
 
 const removeImage = () => {
@@ -209,6 +280,12 @@ const loadNotices = async () => {
     if (res.code === 200) noticeList.value = res.data.records || []
   } catch (e) { console.error(e) }
 }
+
+onBeforeUnmount(() => {
+  if (cropperInstance) {
+    cropperInstance.destroy()
+  }
+})
 </script>
 
 <style scoped>
@@ -324,5 +401,22 @@ const loadNotices = async () => {
 
 .image-preview-large:hover .mask {
   display: flex;
+}
+
+.cropper-container {
+  width: 100%;
+  height: 400px;
+  background: #fff;
+}
+
+.cropper-image {
+  max-width: 100%;
+  max-height: 400px;
+  display: block;
+}
+
+:deep(.cropper-view-box),
+:deep(.cropper-face) {
+  border-radius: 0;
 }
 </style>
