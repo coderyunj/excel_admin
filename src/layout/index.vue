@@ -32,6 +32,10 @@
           <el-icon><Document /></el-icon>
           <span>任务档案</span>
         </el-menu-item>
+        <el-menu-item index="/config">
+          <el-icon><Setting /></el-icon>
+          <span>版本管理</span>
+        </el-menu-item>
       </el-menu>
       <div class="sidebar-bottom">
         <div class="version">v1.0.0</div>
@@ -68,7 +72,7 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DataAnalysis, Picture, User, Document, Bell } from '@element-plus/icons-vue'
+import { DataAnalysis, Picture, User, Document, Bell, Setting } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

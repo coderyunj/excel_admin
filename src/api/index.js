@@ -57,3 +57,6 @@ export const getNotice = (id) => request.get(`/admin/notice/${id}`)
 export const createNotice = (data) => request.post('/admin/notice', data)
 export const updateNotice = (id, data) => request.put(`/admin/notice/${id}`, data)
 export const deleteNotice = (id) => request.delete(`/admin/notice/${id}`)
+
+export const getVersion = () => request.get('/admin/config/version')
+export const updateVersion = (data) => request.put('/admin/config/version', data)

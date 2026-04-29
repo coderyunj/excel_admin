@@ -35,6 +35,12 @@ const routes = [
         name: 'Task',
         component: () => import('../views/task/index.vue'),
         meta: { title: '任务管理' }
+      },
+      {
+        path: '/config',
+        name: 'Config',
+        component: () => import('../views/config/index.vue'),
+        meta: { title: '版本管理' }
       }
     ]
   },
