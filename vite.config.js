@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api/admin/redeem': {
-        target: 'http://localhost:9091',
+        target: 'https://paper.devslow.ccwu.cc',
         changeOrigin: true
       },
       '/api': {
