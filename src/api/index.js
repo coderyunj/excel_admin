@@ -60,3 +60,7 @@ export const deleteNotice = (id) => request.delete(`/admin/notice/${id}`)
 
 export const getVersion = () => request.get('/admin/config/version')
 export const updateVersion = (data) => request.put('/admin/config/version', data)
+
+export const getRedeemList = (page, size, used) => request.get('/admin/redeem/list', { params: { page, size, used } })
+export const generateRedeem = (count, amount, remain) => request.post('/admin/redeem/generate', { count, amount, remain })
+export const deleteRedeem = (id) => request.delete(`/admin/redeem/${id}`)

@@ -6,9 +6,14 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
+      '/api/admin/redeem': {
+        target: 'http://localhost:9091',
         changeOrigin: true
+      },
+      '/api': {
+        target: 'https://devslow.ccwu.cc',
+        changeOrigin: true,
+        secure: true
       }
     }
   }

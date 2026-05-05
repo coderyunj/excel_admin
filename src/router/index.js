@@ -41,6 +41,12 @@ const routes = [
         name: 'Config',
         component: () => import('../views/config/index.vue'),
         meta: { title: '版本管理' }
+      },
+      {
+        path: '/redeem',
+        name: 'Redeem',
+        component: () => import('../views/redeem/index.vue'),
+        meta: { title: '兑换码管理' }
       }
     ]
   },
