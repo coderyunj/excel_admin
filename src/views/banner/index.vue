@@ -259,7 +259,7 @@ const handleSubmit = async () => {
     let imageUrl = form.value.imageUrl
     if (tempFile) {
       const res = await uploadImage(tempFile)
-      if (res.code === 200) imageUrl = res.data.url
+      if (res.code === 0 || res.code === 200) imageUrl = res.data.url
       else { ElMessage.error('图片上传失败'); return }
     }
     const submitData = { ...form.value, imageUrl }
